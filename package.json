@@ -1,0 +1,31 @@
+{
+  "name": "mini-ocr",
+  "version": "1.0.0",
+  "description": "ocr  ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AviorAlong/mini-ocr.git"
+  },
+  "keywords": [
+    "orc"
+  ],
+  "author": "avioralong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AviorAlong/mini-ocr/issues"
+  },
+  "homepage": "https://github.com/AviorAlong/mini-ocr#readme",
+  "devDependencies": {
+    "electron": "^9.1.2"
+  },
+  "dependencies": {
+    "baidu-aip-sdk": "^2.4.6",
+    "electron-debug": "^3.1.0",
+    "electron-screenshots": "0.0.10"
+  }
+}
