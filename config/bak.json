@@ -1,0 +1,12 @@
+{
+	"direct": {
+	  "host": "https://aip.baidubce.com",
+	  "client_secret": "ADNU8yRYXluzLArkT7D7VxsMVaFjX6Qu",
+	  "grant_type": "client_credentials",
+	  "client_id": "zRS1pC2CfeYIfkjhxD8mthiM"
+	},
+	"proxy": {
+	  "enable": true,
+	  "host": "https://1613606417303976.cn-huhehaote.fc.aliyuncs.com/2016-08-15/proxy/serverless-hello-world/accurate/"
+	}
+  }

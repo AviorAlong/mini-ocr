@@ -79,6 +79,7 @@
       border-radius: 10px;
       border: 1px solid dodgerblue;
       padding: 15px;
+      position: relative;
     }
 
     .label-header {
@@ -130,9 +131,7 @@
       font-size: 15px;
 
     }
-    .origin{
-      text-align: justify;
-    }
+
     .image-text::-webkit-scrollbar {
       /*滚动条整体样式*/
       width: 10px;
@@ -166,7 +165,8 @@
       width: 100%;
       height: 84%;
       margin-top: 20px;
-    }
+      text-align: center;
+  }
 
     .scrollbar-wrap::-webkit-scrollbar {
       /*滚动条整体样式*/
@@ -195,6 +195,42 @@
       background: #56a3ad;
       border-radius: 10px;
     }
+
+    .close {
+      top: 0px;
+      right: 1px;
+      position: absolute;
+      background: #f9fafb;
+      color: #9bbcd6;
+      border-radius: 12px;
+      line-height: 20px;
+      text-align: center;
+      height: 20px;
+      width: 20px;
+      font-size: 15px;
+      padding: 1px;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    /* use cross as close button */
+    .close::before {
+      content: "\2716";
+    }
+
+    .close:hover {
+      color: #0d8cf1;
+    }
+
+ 
+  /* 拖拽时用jQuery为其添加边框样式的class */
+  .holder-ondrag{
+    background:lightsteelblue;
+  }
+
+  #drop-tip{
+    color: steelblue;
+  }
   </style>
 </head>
 
@@ -202,19 +238,21 @@
 
   <div>
     <div class="image-div">
-      <!-- <div class="scrollbar-wrap"> -->
       <textarea readonly name="orc-text" class="image-text" id="image-text" spellcheck="false"></textarea>
-      <!-- </div> -->
       <p class="result-text">识别结果</p>
     </div>
-    <div class="image-div">
-      <div class="scrollbar-wrap">
-        <img class="origin" id="origin-image" src="images/404-2.jpg" alt="ocr 原图展示区域">
+    <div class="image-div " id="image-wrap">
+      <div class="scrollbar-wrap ">
+        <img class="origin" id="origin-image" src="images/img-default.png" alt="ocr 原图展示区域">
+        <p id="drop-tip">拖拽图片至此</p>
       </div>
       <p class="result-text">原图展示</p>
     </div>
     <div class="secret-model" id="secret-model">
+
+
       <div class="model-body">
+        <span class="close x-close"></span>
         <div class="row">
           <label for="type" class="label-header">代理:</label>
           <label for="proxy">是</label>
@@ -224,7 +262,7 @@
         </div>
         <div class="row">
           <label for="client_secret" class="label-header">secret:</label>
-          <input type="text" id="client_id">
+          <input type="text" id="client_secret">
         </div>
         <div class="row">
           <label for="client_id" class="label-header">id:</label>
