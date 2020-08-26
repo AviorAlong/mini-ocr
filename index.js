@@ -8,21 +8,53 @@ const {
 } = require('electron')
 const Screenshots = require('electron-screenshots').default
 const Baidu = require('./lib/direct-baidu')
+const FaasService = require('./lib/faas-service')
 const Menus = require('./lib/menus')
 const config = {
   "direct": {
-    "enable": true,
     "host": "https://aip.baidubce.com",
     "client_secret": "ADNU8yRYXluzLArkT7D7VxsMVaFjX6Qu",
     "grant_type": "client_credentials",
     "client_id": "zRS1pC2CfeYIfkjhxD8mthiM"
   },
   "proxy": {
-    "enable": false,
-    "host": ""
+    "enable": true,
+    "host": "https://1613606417303976.cn-huhehaote.fc.aliyuncs.com/2016-08-15/proxy/serverless-hello-world/accurate/"
   }
 }
 
+const baidu = new Baidu(config.direct)
+const faasApi = new FaasService(config.proxy)
+
+async function directOcr(viewer) {
+  try {
+    if (!baidu.isExpired()) {
+      await baidu.getToken()
+    }
+    let ocrCtx = await baidu.ocrTrans(viewer.dataURL)
+    let imageText = null
+    if (ocrCtx && ocrCtx.words_result) {
+      imageText = baidu.transResult(ocrCtx.words_result)
+    }
+    return imageText
+  } catch (error) {
+    console.log('baiduApi:', error)
+  }
+}
+
+async function faasOcr(viewer) {
+  try {
+    let ocrCtx = await  faasApi.accurate(viewer.dataURL)
+    console.log(ocrCtx)
+    let imageText = null
+    if (ocrCtx && ocrCtx.words_result) {
+      imageText = faasApi.transResult(ocrCtx.words_result)
+    }
+    return imageText
+  } catch (error) {
+    console.log('faasApi:', error)
+  }
+}
 
 function createWindow() {
   // 创建浏览器窗口
@@ -46,10 +78,9 @@ function createWindow() {
 app.on('ready', () => {
   const win = createWindow()
   const screenshots = new Screenshots()
-  const menus = new Menus(win,screenshots)
+  const menus = new Menus(win, screenshots)
   menus.createMenu()
 
-  const baidu = new Baidu(config.direct)
 
   // globalShortcut.register('ctrl+shift+f', () => screenshots.startCapture())
   // ipcMain.on('asynchronous-message', (event, arg) => {
@@ -65,24 +96,16 @@ app.on('ready', () => {
   // 点击确定按钮回调事件
   screenshots.on('ok', async (e, viewer) => {
     if (viewer.dataURL) {
-      try {
-        
-        if (!baidu.isExpired()){
-          await baidu.getToken()
-        }
-        win.webContents.send('origin-image',viewer.dataURL)
-        let ocrCtx =  await baidu.ocrTrans(viewer.dataURL)
-        let imageText = null
-        if(ocrCtx && ocrCtx.words_result){
-          imageText = baidu.transResult(ocrCtx.words_result)
-          console.log(imageText)
-          win.webContents.send('imageText',imageText)
-        }
-      } catch (error) {
-        console.log('baiduApi:',error)
+      win.webContents.send('origin-image', viewer.dataURL)
+      let imageText = ''
+      if (config.proxy.enable) {
+        imageText = await faasOcr(viewer)
+      } else {
+        imageText = await directOcr(viewer)
       }
-      
+      win.webContents.send('imageText', imageText)
     }
+
   })
 
   screenshots.on('cancel', e => {
@@ -96,24 +119,16 @@ app.on('ready', () => {
     viewer
   }) => {
     if (viewer.dataURL) {
-      try {
-        
-        if (!baidu.isExpired()){
-          await baidu.getToken()
-        }
-        win.webContents.send('origin-image',viewer.dataURL)
-        let ocrCtx =  await baidu.ocrTrans(viewer.dataURL)
-        let imageText = null
-        if(ocrCtx && ocrCtx.words_result){
-          imageText = baidu.transResult(ocrCtx.words_result)
-          console.log(imageText)
-          win.webContents.send('imageText',imageText)
-        }
-      } catch (error) {
-        console.log('baiduApi:',error)
+      win.webContents.send('origin-image', viewer.dataURL)
+      let imageText = ''
+      if (config.proxy.enable) {
+        imageText = await faasOcr(viewer)
+      } else {
+        imageText = await directOcr(viewer)
       }
-      
-    }  })
+      win.webContents.send('imageText', imageText)
+    }
+  })
   // debug({
   //   showDevTools: true,
   //   devToolsMode: 'undocked'

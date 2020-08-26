@@ -2,7 +2,7 @@ const { ipcRenderer } = require('electron')
 const secretModel = require('./views/js/secret.js')
 
 let model = new secretModel('secret-model')
-model.show()
+// model.show()
 
 ipcRenderer.on('imageText', (event, message) => {
 	message = message.join('\n')
