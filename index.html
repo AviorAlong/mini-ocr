@@ -166,7 +166,7 @@
       height: 84%;
       margin-top: 20px;
       text-align: center;
-  }
+    }
 
     .scrollbar-wrap::-webkit-scrollbar {
       /*滚动条整体样式*/
@@ -222,15 +222,22 @@
       color: #0d8cf1;
     }
 
- 
-  /* 拖拽时用jQuery为其添加边框样式的class */
-  .holder-ondrag{
-    background:lightsteelblue;
-  }
 
-  #drop-tip{
-    color: steelblue;
-  }
+    /* 拖拽时用jQuery为其添加边框样式的class */
+    .holder-ondrag {
+      background: lightsteelblue;
+    }
+
+    .drop-tip {
+      color: steelblue;
+    }
+
+    .setting-tip {
+      text-align: left;
+      display: none;
+      color: #ea0a0a;
+      margin-left: 120px;
+    }
   </style>
 </head>
 
@@ -241,16 +248,17 @@
       <textarea readonly name="orc-text" class="image-text" id="image-text" spellcheck="false"></textarea>
       <p class="result-text">识别结果</p>
     </div>
-    <div class="image-div " id="image-wrap">
+    <div class="image-div " id="image-wrap" tabindex="-1">
       <div class="scrollbar-wrap ">
-        <img class="origin" id="origin-image" src="images/img-default.png" alt="ocr 原图展示区域">
-        <p id="drop-tip">拖拽图片至此</p>
+        <img class="origin" id="origin-image" src="images/img-default.png" alt="仅支持jpg|jpeg|png|bmp格式的图片">
+        <div class="drop-tip" id="drop-tip">
+          <p id="tip">拖拽图片至此</p>
+        </div>
+
       </div>
       <p class="result-text">原图展示</p>
     </div>
     <div class="secret-model" id="secret-model">
-
-
       <div class="model-body">
         <span class="close x-close"></span>
         <div class="row">
@@ -261,16 +269,19 @@
           <input type="radio" name="isProxy" value="0" id="direct">
         </div>
         <div class="row">
-          <label for="client_secret" class="label-header">secret:</label>
-          <input type="text" id="client_secret">
+          <label for="client_id" class="label-header">id:</label>
+          <input type="text" id="client_id" spellcheck="false">
         </div>
         <div class="row">
-          <label for="client_id" class="label-header">id:</label>
-          <input type="text" id="client_id">
+          <label for="client_secret" class="label-header">secret:</label>
+          <input type="text" id="client_secret" spellcheck="false">
         </div>
         <div class="row buttons">
           <input type="button" class="button ok" value="确认">
           <input type="button" class="button cancel" value="取消">
+        </div>
+        <div class="setting-tip" id="setting-tip">
+          <p id="setting-tip-p">拖拽图片至此</p>
         </div>
       </div>
     </div>

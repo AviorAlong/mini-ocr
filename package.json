@@ -1,11 +1,36 @@
 {
   "name": "mini-ocr",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "ocr  ",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "productName": "寅恪OCR",
+    "appId": "com.electron.along",
+    "copyright": "avior along 所属",
+    "directories": {
+      "output": "build"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "./build/icons/favicon.ico",
+      "uninstallerIcon": "./build/icons/favicon.ico",
+      "installerHeaderIcon": "./build/icons/favicon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "寅恪OCR"
+    },
+    "win": {
+      "icon": "build/icons/favicon.ico",
+      "extraResources": ""
+    }
   },
   "repository": {
     "type": "git",
@@ -21,11 +46,10 @@
   },
   "homepage": "https://github.com/AviorAlong/mini-ocr#readme",
   "devDependencies": {
-    "electron": "^9.1.2"
+    "electron-builder": "^22.8.0"
   },
   "dependencies": {
-    "baidu-aip-sdk": "^2.4.6",
-    "electron-debug": "^3.1.0",
+    "electron": "^9.1.2",
     "electron-screenshots": "0.0.10"
   }
 }

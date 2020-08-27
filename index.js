@@ -1,18 +1,15 @@
-const debug = require('electron-debug')
 const path = require('path')
 const {
     app,
     globalShortcut,
     BrowserWindow,
-    ipcMain,
+    ipcMain
 } = require('electron')
 const Screenshots = require('electron-screenshots').default
 const Baidu = require('./lib/direct-baidu')
 const FaasService = require('./lib/faas-service')
 const Menus = require('./lib/menus')
-const config = require('./config/auth.json')
-
-
+let config = require('./config/auth.json')
 
 const baidu = new Baidu(config.direct)
 const faasApi = new FaasService(config.proxy)
@@ -55,14 +52,15 @@ function createWindow() {
         width: 800,
         height: 600,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            worldSafeExecuteJavaScript: true
         },
         icon: path.join(__dirname, 'images/logo.png')
     })
 
     // 并且为你的应用加载index.html
     win.loadFile('index.html')
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
 
     return win
 }
@@ -81,6 +79,17 @@ app.on('ready', () => {
     }
 
 
+    ipcMain.on('stick-up', async (event,image) => {
+        if (config.proxy.enable) {
+            imageText = await faasOcr(image)
+        } else {
+            imageText = await directOcr(image)
+        }
+        // event.reply()
+        win.webContents.send('imageText', imageText)
+
+    })
+
     ipcMain.on('image-drop', async (event, image) => {
         if (config.proxy.enable) {
             imageText = await faasOcr(image)
@@ -89,6 +98,13 @@ app.on('ready', () => {
         }
         win.webContents.send('imageText', imageText)
 
+    })
+
+    ipcMain.on('update-config', async (event, conf) => {
+        console.log(conf)
+       config = conf;
+       baidu.config = config.direct
+       faasApi.config = config.proxy
     })
 
     // 点击确定按钮回调事件
@@ -127,11 +143,6 @@ app.on('ready', () => {
             win.webContents.send('imageText', imageText)
         }
     })
-
-    // debug({
-    //   showDevTools: true,
-    //   devToolsMode: 'undocked'
-    // })
 })
 
 app.on('window-all-closed', () => {
@@ -147,3 +158,7 @@ app.on('activate', () => {
         createWindow()
     }
 })
+
+
+
+

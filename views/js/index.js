@@ -1,22 +1,23 @@
 const {
-	ipcRenderer
+	ipcRenderer,
+	clipboard
 } = require('electron')
 const fs = require('fs')
+const path = require('path')
 const secretModel = require('./views/js/secret.js')
 
-let model = new secretModel('secret-model')
-// model.show()
-
+const model = new secretModel('secret-model')
+//image 内容
 ipcRenderer.on('imageText', (event, message) => {
 	message = message.join('\n')
 	document.getElementById('image-text').textContent = message
 })
+// image
 ipcRenderer.on('origin-image', (event, message) => {
 	document.getElementById('origin-image').src = message
 })
-
+// 设置
 ipcRenderer.on('setting', (event, m) => {
-	console.log(m)
 	m = JSON.parse(m)
 	let display = model.handler.style.display
 	if (m && m.msg && !m.proxy) {
@@ -40,9 +41,9 @@ ipcRenderer.on('setting', (event, m) => {
 		}
 	}
 })
-
+// 检查图片格式
 function imgTypeCheck(file) {
-	return !/.(jpg|jpeg|png|bmp|JPG|PNG|JPEG|BMP)$/.test(file.split('/')[1])
+	return /(jpg|jpeg|png|bmp|JPG|PNG|JPEG|BMP)$/.test(file.split('/')[1])
 }
 const holder = $('#image-wrap')
 holder.on("dragenter dragover", function (event) {
@@ -57,15 +58,8 @@ holder.on("dragleave", function (event) {
 });
 
 holder.on("drop", function (event) {
-	// 调用 preventDefault() 来避免浏览器对数据的默认处理（drop 事件的默认行为是以链接形式打开） 
+	// 调用 preventDefault() 来避免浏览器对数据的默认处理 
 	event.preventDefault();
-	// 原生语句如下，但引进jquery后要更改
-	// var file=event.dataTransfer.files[0];
-	// 原因：
-	// 在jquery中，最终传入事件处理程序的 event 其实已经被 jQuery 做过标准化处理，
-	// 其原有的事件对象则被保存于 event 对象的 originalEvent 属性之中，
-	// 每个 event 都是 jQuery.Event 的实例
-	// 应该这样写:
 	var efile = event.originalEvent.dataTransfer.files[0];
 	console.log(efile)
 	if (efile.type && imgTypeCheck(efile.type)) {
@@ -74,15 +68,13 @@ holder.on("drop", function (event) {
 			let base64 = Buffer.from(data).toString('base64');
 			let imgBase64 = `data:${efile.type};base64,${base64}`
 			$('#origin-image').attr('src', imgBase64)
-			$('#drop-tip').attr('display','none')
-			ipcRenderer.send('image-drop',imgBase64)
+			$('#drop-tip').css('display', 'none')
+			ipcRenderer.send('image-drop', imgBase64)
 		});
 	} else {
-		$('#drop-tip').text = `不支持该图片格式${efile.type}`
+		$('#tip').text(`不支持该文件格式${efile.type}`)
 	}
 	holder.removeClass("holder-ondrag");
-
-	return false;
 });
 
 
@@ -101,20 +93,55 @@ $('input[type=radio][name="isProxy"]').change(() => {
 
 
 $('.cancel').on('click', () => {
-	$('input[type=text]').val('')
 	model.hide()
 })
 
 $('.ok').on('click', () => {
-	let checkResult = model.check()
-	if (checkResult) {
-		model.ok()
-	} else {
-		console.log('参数不正确')
+	console.log(__dirname,__filename)
+	let filePath = path.resolve(__dirname,'config/auth.json')
+	let config = require(filePath)
+	let setting = model.ok()
+	if(setting){
+		if (setting.proxy === "1") {
+			config.proxy.enable = true
+		}else{
+			config.direct.client_secret = setting.secret
+			config.direct.client_id = setting.id 
+			config.proxy.enable = false
+		}
+
+		fs.writeFile(filePath,JSON.stringify(config), err=>{
+			if (err) {
+				console.log(err)
+				$('#setting-tip').css('display','block')
+				$('#setting-tip-p').text('请输入正确的配置信息')
+			}else{
+				ipcRenderer.send('update-config',config)
+				console.log('配置已更新')
+				model.hide()
+			}
+		})
+	}else{
+		$('#setting-tip').css('display','block')
+		$('#setting-tip-p').text('请输入正确的配置信息')
+		console.log('请输入正确的配置信息')
 	}
 })
 
 $('.close').on('click', () => {
-	$('input[type=text]').val('')
 	model.hide()
+})
+
+$('#image-wrap').on('keydown',(e)=>{
+	e.preventDefault()
+	if (e.ctrlKey && e.which == 86) {
+		let image = clipboard.readImage().toDataURL()
+		if(image){
+			ipcRenderer.send('stick-up',image)
+			$('#origin-image').attr('src', image)
+			$('#drop-tip').css('display', 'none')
+		}else{
+			$('#tip').text(`请复制符合条件的图片`)
+		}
+	}
 })
