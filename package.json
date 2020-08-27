@@ -28,8 +28,7 @@
       "shortcutName": "寅恪OCR"
     },
     "win": {
-      "icon": "build/icons/favicon.ico",
-      "extraResources": ""
+      "icon": "build/icons/favicon.ico"
     }
   },
   "repository": {
@@ -46,10 +45,10 @@
   },
   "homepage": "https://github.com/AviorAlong/mini-ocr#readme",
   "devDependencies": {
-    "electron-builder": "^22.8.0"
+    "electron-builder": "^22.8.0",
+    "electron": "^9.1.2"
   },
   "dependencies": {
-    "electron": "^9.1.2",
     "electron-screenshots": "0.0.10"
   }
 }
