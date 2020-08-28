@@ -6,9 +6,9 @@ const {
     ipcMain
 } = require('electron')
 const Screenshots = require('electron-screenshots').default
-const Baidu = require('./lib/direct-baidu')
-const FaasService = require('./lib/faas-service')
-const Menus = require('./lib/menus')
+const Baidu = require('./lib/direct-baidu.js')
+const FaasService = require('./lib/faas-service.js')
+const Menus = require('./lib/menus.js')
 let config = require('./config/auth.json')
 
 const baidu = new Baidu(config.direct)
@@ -59,7 +59,7 @@ function createWindow() {
     })
 
     // 并且为你的应用加载index.html
-    win.loadFile('index.html')
+    win.loadFile('./views/index.html')
     // win.webContents.openDevTools()
 
     return win

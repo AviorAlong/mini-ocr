@@ -4,7 +4,7 @@ const {
 } = require('electron')
 const fs = require('fs')
 const path = require('path')
-const secretModel = require('./views/js/secret.js')
+const secretModel = require('./secret.js')
 
 const model = new secretModel('secret-model')
 //image 内容
@@ -97,32 +97,31 @@ $('.cancel').on('click', () => {
 })
 
 $('.ok').on('click', () => {
-	console.log(__dirname,__filename)
-	let filePath = path.resolve(__dirname,'config/auth.json')
+	let filePath = path.resolve(__dirname, 'config/auth.json')
 	let config = require(filePath)
 	let setting = model.ok()
-	if(setting){
+	if (setting) {
 		if (setting.proxy === "1") {
 			config.proxy.enable = true
-		}else{
+		} else {
 			config.direct.client_secret = setting.secret
-			config.direct.client_id = setting.id 
+			config.direct.client_id = setting.id
 			config.proxy.enable = false
 		}
 
-		fs.writeFile(filePath,JSON.stringify(config), err=>{
+		fs.writeFile(filePath, JSON.stringify(config), err => {
 			if (err) {
 				console.log(err)
-				$('#setting-tip').css('display','block')
+				$('#setting-tip').css('display', 'block')
 				$('#setting-tip-p').text('请输入正确的配置信息')
-			}else{
-				ipcRenderer.send('update-config',config)
+			} else {
+				ipcRenderer.send('update-config', config)
 				console.log('配置已更新')
 				model.hide()
 			}
 		})
-	}else{
-		$('#setting-tip').css('display','block')
+	} else {
+		$('#setting-tip').css('display', 'block')
 		$('#setting-tip-p').text('请输入正确的配置信息')
 		console.log('请输入正确的配置信息')
 	}
@@ -132,15 +131,15 @@ $('.close').on('click', () => {
 	model.hide()
 })
 
-$('#image-wrap').on('keydown',(e)=>{
+$('#image-wrap').on('keydown', (e) => {
 	e.preventDefault()
 	if (e.ctrlKey && e.which == 86) {
 		let image = clipboard.readImage().toDataURL()
-		if(image){
-			ipcRenderer.send('stick-up',image)
+		if (image) {
+			ipcRenderer.send('stick-up', image)
 			$('#origin-image').attr('src', image)
 			$('#drop-tip').css('display', 'none')
-		}else{
+		} else {
 			$('#tip').text(`请复制符合条件的图片`)
 		}
 	}

@@ -1,4 +1,4 @@
-const Request = require('./request')
+const Request = require('./request.js')
 const qs = require('querystring')
 class FaasService{
 	constructor(config){
