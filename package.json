@@ -16,8 +16,9 @@
     "appId": "com.electron.along",
     "copyright": "avior along 所属",
     "files": [
+      "**/*",
       "./dist/**/*",
-      "./node_modules/**/*"
+      "!./node_modules/**/*"
     ],
     "nsis": {
       "oneClick": false,
@@ -63,6 +64,6 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "jquery": "^3.5.1"
+    "electron-screenshots": "0.0.10"
   }
 }

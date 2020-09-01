@@ -4,7 +4,7 @@ const {
 } = require('electron')
 const fs = require('fs')
 const path = require('path')
-const secretModel = require('./secret.js')
+const secretModel = require( path.resolve(__dirname,'./js/secret'))
 
 const model = new secretModel('secret-model')
 //image 内容
@@ -97,7 +97,7 @@ $('.cancel').on('click', () => {
 })
 
 $('.ok').on('click', () => {
-	let filePath = path.resolve(__dirname, 'config/auth.json')
+	let filePath = path.resolve(__dirname, '../config/auth.json')
 	let config = require(filePath)
 	let setting = model.ok()
 	if (setting) {

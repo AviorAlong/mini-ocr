@@ -1,0 +1,22 @@
+{
+	"name": "mini-ocr",
+	"version": "1.1.0",
+	"description": "ocr  ",
+	"main": "dist/index.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/AviorAlong/mini-ocr.git"
+	},
+	"keywords": [
+		"orc"
+	],
+	"author": "avioralong",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/AviorAlong/mini-ocr/issues"
+	},
+	"homepage": "https://github.com/AviorAlong/mini-ocr#readme",
+	"dependencies": {
+		"electron-screenshots": "0.0.10"
+	}
+}
