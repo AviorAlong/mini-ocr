@@ -60,7 +60,7 @@ function createWindow() {
 
     // 并且为你的应用加载index.html
     win.loadFile('./views/index.html')
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
 
     return win
 }
